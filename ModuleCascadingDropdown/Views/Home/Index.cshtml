@@ -1,0 +1,50 @@
+﻿@model ModuleCascadingDropdown.Models.AddressModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+
+
+@Html.LabelFor(model => model.CountryId)
+@Html.DropDownListFor(model => model.CountryId, Model.AvailableCountries)
+
+<br />
+
+@Html.LabelFor(model => model.StateId)
+@Html.DropDownListFor(model => model.StateId, Model.AvailableStates)
+<span id="states-loading-progress" style="display: none;">Please wait..</span>
+
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#CountryId").change(function () {
+                 var selectedItem = $(this).val();
+                 var ddlStates = $("#StateId");
+              var statesProgress = $("#states-loading-progress");
+             statesProgress.show();
+             $.ajax({
+                 cache: false,
+                 type: "GET",
+                 url: "@(Url.RouteUrl("GetStatesByCountryId"))",
+                    data: { "countryId": selectedItem },
+                    success: function (data) {
+                        ddlStates.html('');
+                        $.each(data, function (id, option) {
+                            ddlStates.append($('<option></option>').val(option.id).html(option.name));
+                        });
+                        statesProgress.hide();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to retrieve states.');
+                        statesProgress.hide();
+                    }
+                });
+            });
+        });
+</script>
