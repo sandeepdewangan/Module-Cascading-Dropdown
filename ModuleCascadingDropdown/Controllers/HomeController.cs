@@ -65,7 +65,8 @@ namespace ModuleCascadingDropdown.Controllers
                               id = s.Id,
                               name = s.Name
                           }).ToList();
-            return Json(new { data = result });
+
+            return Json(result);
         }
     }
 }
